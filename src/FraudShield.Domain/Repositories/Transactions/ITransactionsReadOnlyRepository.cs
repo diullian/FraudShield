@@ -6,6 +6,6 @@ using System.Threading.Tasks;
 
 namespace FraudShield.Domain.Repositories.Transactions;
 
-internal interface ITransactionsReadOnlyRepository
+public interface ITransactionsReadOnlyRepository
 {
 }
