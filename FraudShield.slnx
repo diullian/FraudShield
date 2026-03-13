@@ -1,0 +1,10 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/FraudShield.Api/FraudShield.Api.csproj" />
+    <Project Path="src/FraudShield.Application/FraudShield.Application.csproj" />
+    <Project Path="src/FraudShield.Communication/FraudShield.Communication.csproj" />
+    <Project Path="src/FraudShield.Domain/FraudShield.Domain.csproj" Id="6db2befe-77a3-42c5-b753-2e5a4555f976" />
+    <Project Path="src/FraudShield.Infrastructure/FraudShield.Infrastructure.csproj" Id="9ff142ea-8ed1-4566-871a-a3b5abf92946" />
+  </Folder>
+  <Folder Name="/tests/" />
+</Solution>
