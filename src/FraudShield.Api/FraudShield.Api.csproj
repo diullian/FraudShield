@@ -10,4 +10,10 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\FraudShield.Application\FraudShield.Application.csproj" />
+    <ProjectReference Include="..\FraudShield.Communication\FraudShield.Communication.csproj" />
+    <ProjectReference Include="..\FraudShield.Infrastructure\FraudShield.Infrastructure.csproj" />
+  </ItemGroup>
+
 </Project>
