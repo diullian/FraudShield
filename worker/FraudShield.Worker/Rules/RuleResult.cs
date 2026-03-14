@@ -1,13 +1,13 @@
-﻿using FraudShield.Domain.Enums;
+﻿using FraudShield.Worker.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FraudShield.Domain.Rules;
+namespace FraudShield.Worker.Rules;
 
-public record RuleResult
+public class RuleResult
 {
     public string Name { get; set; }
     public bool Triggered { get; set; }
