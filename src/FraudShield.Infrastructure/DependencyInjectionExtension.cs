@@ -1,6 +1,7 @@
 ﻿using FraudShield.Domain.Repositories.Transactions;
 using FraudShield.Infrastructure.DataAccess;
 using FraudShield.Infrastructure.DataAccess.Repositories;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -22,6 +23,7 @@ public static class DependencyInjectionExtension
 
     private static void AddDbContext(IServiceCollection services, IConfiguration configuration)
     {
-        services.AddDbContext<FraudShieldDbContext>();
+        services.AddDbContext<FraudShieldDbContext>(options => 
+            options.UseSqlServer(configuration.GetConnectionString("Default")));
     }
 }
