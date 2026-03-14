@@ -9,5 +9,5 @@ namespace FraudShield.Domain.Repositories.Transactions;
 
 public interface ITransactionsWriteOnlyRepository
 {
-    Task<Guid> AddTransactionAsync(FinancialTransaction transaction);
+    Task AddTransactionAsync(FinancialTransaction transaction);
 }

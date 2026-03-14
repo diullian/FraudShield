@@ -7,7 +7,7 @@ public class FraudShieldDbContext : DbContext
 {
     public FraudShieldDbContext(DbContextOptions options) : base(options) { }
 
-    DbSet<FinancialTransaction> FinancialTransactions { get; set; }
+    public DbSet<FinancialTransaction> FinancialTransactions { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

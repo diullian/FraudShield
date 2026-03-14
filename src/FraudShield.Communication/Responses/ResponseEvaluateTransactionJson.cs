@@ -10,7 +10,7 @@ namespace FraudShield.Communication.Responses;
 public class ResponseEvaluateTransactionJson
 {
     public Guid TransactionId { get; set; }
-    public string Message { get; set; }
+    public string Message { get; set; } = "Transaction received and being processed. Waiting please!!";
     public TransactionStatus Status { get; set; }
 
 }

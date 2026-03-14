@@ -20,20 +20,23 @@ public class EvaluateTransactionUseCase : IEvaluateTransactionUseCase
         _mapper = mapper;
     }
 
-    public Task<ResponseEvaluateTransactionJson> ExecuteAsync(RequestEvaluateTransactionJson request)
+    public async Task<ResponseEvaluateTransactionJson> ExecuteAsync(RequestEvaluateTransactionJson request)
     {
 
         Validate(request);
         
         var transaction = _mapper.Map<FinancialTransaction>(request);
         
-        
-        return Task.FromResult(new ResponseEvaluateTransactionJson
-        {
-            TransactionId = transaction.Id,
-            Status = TransactionStatus.Pending,
-            Message = "Transaction received and being processed. Waiting please!!",
-        });
+        await _repository.AddTransactionAsync(transaction);
+
+
+        return _mapper.Map<ResponseEvaluateTransactionJson>(transaction);
+        //return Task.FromResult(new ResponseEvaluateTransactionJson
+        //{
+        //    TransactionId = transaction.Id,
+        //    Status = TransactionStatus.Pending,
+        //    Message = "Transaction received and being processed. Waiting please!!",
+        //});
 
     }
 

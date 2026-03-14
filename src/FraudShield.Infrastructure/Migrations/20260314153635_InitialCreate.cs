@@ -28,16 +28,34 @@ namespace FraudShield.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Merchant",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Category = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Country = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    State = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    City = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Merchant", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "FinancialTransactions",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     IdempotencyKey = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Amount = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
-                    Currency = table.Column<int>(type: "int", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Status = table.Column<int>(type: "int", nullable: false),
+                    Currency = table.Column<int>(type: "int", nullable: false),
+                    PaymentType = table.Column<int>(type: "int", nullable: false),
                     CustomerId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    PaymentType = table.Column<int>(type: "int", nullable: false)
+                    MerchantId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -48,12 +66,23 @@ namespace FraudShield.Infrastructure.Migrations
                         principalTable: "Customer",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_FinancialTransactions_Merchant_MerchantId",
+                        column: x => x.MerchantId,
+                        principalTable: "Merchant",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
                 name: "IX_FinancialTransactions_CustomerId",
                 table: "FinancialTransactions",
                 column: "CustomerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_FinancialTransactions_MerchantId",
+                table: "FinancialTransactions",
+                column: "MerchantId");
         }
 
         /// <inheritdoc />
@@ -64,6 +93,9 @@ namespace FraudShield.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "Customer");
+
+            migrationBuilder.DropTable(
+                name: "Merchant");
         }
     }
 }

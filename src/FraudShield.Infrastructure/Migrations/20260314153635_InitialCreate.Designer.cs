@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FraudShield.Infrastructure.Migrations
 {
     [DbContext(typeof(FraudShieldDbContext))]
-    [Migration("20260314024249_InitialCreate")]
+    [Migration("20260314153635_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -78,14 +78,53 @@ namespace FraudShield.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<Guid>("MerchantId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<int>("PaymentType")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Status")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("CustomerId");
 
+                    b.HasIndex("MerchantId");
+
                     b.ToTable("FinancialTransactions");
+                });
+
+            modelBuilder.Entity("FraudShield.Domain.Entities.Merchant", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Category")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("City")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Country")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("State")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Merchant");
                 });
 
             modelBuilder.Entity("FraudShield.Domain.Entities.FinancialTransaction", b =>
@@ -96,7 +135,15 @@ namespace FraudShield.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("FraudShield.Domain.Entities.Merchant", "Merchant")
+                        .WithMany()
+                        .HasForeignKey("MerchantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Customer");
+
+                    b.Navigation("Merchant");
                 });
 #pragma warning restore 612, 618
         }
