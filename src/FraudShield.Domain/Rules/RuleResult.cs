@@ -12,6 +12,8 @@ public record RuleResult
     public string Name { get; set; }
     public bool Triggered { get; set; }
     public FraudDecision Decision { get; set; }
+
+    public RiskLevel RiskLevel { get; set; }
     public string Reason { get; set; }
 
     public static RuleResult NotTriggered(string name)

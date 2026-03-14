@@ -29,5 +29,20 @@ public class RuleHighAmount : IFraudRule
 
         return RuleResult.NotTriggered(Name);
     }
+
+    private RiskLevel CalculateRiskLevel(List<RuleResult> triggeredRules)
+    {
+        // sua lógica aqui
+        if(triggeredRules.Any(r => r.RiskLevel == RiskLevel.High))
+        {
+            return RiskLevel.High;
+        }
+        if (triggeredRules.Any(r => r.RiskLevel == RiskLevel.Medium))
+        {
+            return RiskLevel.Medium;
+        }
+        return RiskLevel.Low;
+    }
+
 }
 

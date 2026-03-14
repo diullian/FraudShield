@@ -1,9 +1,8 @@
-version: "3.8"
-
 services:
   sqlserver:
     image: mcr.microsoft.com/mssql/server:2022-latest
     container_name: fraudshield-sqlserver
+    restart: always
     environment:
       SA_PASSWORD: "fraudshield@123"
       ACCEPT_EULA: "Y"
@@ -11,19 +10,16 @@ services:
       - "1433:1433"
     volumes:
       - sqlserver_data:/var/opt/mssql
-
-  # rabbitmq:
-  #   image: rabbitmq:3-management
-  #   container_name: fraudshield-rabbitmq
-  #   ports:
-  #     - "5672:5672"
-  #     - "15672:15672"
-
-  # redis:
-  #   image: redis:alpine
-  #   container_name: fraudshield-redis
-  #   ports:
-  #     - "6379:6379"
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: fraudshield-rabbitmq
+    restart: always
+    ports:
+      - "5672:5672" # conexão da aplicação
+      - "15672:15672" # interface web de gerenciamento
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
 
 volumes:
   sqlserver_data:
+  rabbitmq_data:
