@@ -1,7 +1,10 @@
-﻿using FraudShield.Communication.Enums;
+﻿using FraudShield.Application.Mapping;
+using FraudShield.Communication.Enums;
 using FraudShield.Communication.Requests;
 using FraudShield.Communication.Responses;
+using FraudShield.Domain.Entities;
 using FraudShield.Domain.Repositories.Transactions;
+using MapsterMapper;
 
 namespace FraudShield.Application.UseCases.Transaction;
 
@@ -9,25 +12,27 @@ public class EvaluateTransactionUseCase : IEvaluateTransactionUseCase
 {
 
     private readonly ITransactionsWriteOnlyRepository _repository;
-    public EvaluateTransactionUseCase(ITransactionsWriteOnlyRepository repository)
+    private readonly IMapper _mapper;
+
+    public EvaluateTransactionUseCase(ITransactionsWriteOnlyRepository repository, IMapper mapper)
     {
         _repository = repository;
+        _mapper = mapper;
     }
 
     public Task<ResponseEvaluateTransactionJson> ExecuteAsync(RequestEvaluateTransactionJson request)
     {
 
         Validate(request);
-
         
-
+        var transaction = _mapper.Map<FinancialTransaction>(request);
+        
+        
         return Task.FromResult(new ResponseEvaluateTransactionJson
         {
-            TransactionId = Guid.NewGuid(),
-            FraudDecision = FraudDecision.Approved,
-            RiskLevel = RiskLevel.Low,
-            TriggeredRules = new List<string>(),
-            EvaluatedAt = DateTime.UtcNow
+            TransactionId = transaction.Id,
+            Status = TransactionStatus.Pending,
+            Message = "Transaction received and being processed. Waiting please!!",
         });
 
     }

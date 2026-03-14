@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace FraudShield.Communication.Requests;
 
-public class MerchantRequest
+public class RequestMerchantJson
 {
     public string Name { get; set; }
     public string Category { get; set; } // MCC code ex: "5411" = supermercado

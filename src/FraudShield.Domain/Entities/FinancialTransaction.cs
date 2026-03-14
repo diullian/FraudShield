@@ -15,6 +15,8 @@ public class FinancialTransaction
     public decimal Amount { get; set; }
     
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
+    public TransactionStatus Status { get; set; } = TransactionStatus.Pending;
     public Currency Currency { get; set; }
     public required PaymentType PaymentType { get; init; }
     public required Customer Customer { get; set; }

@@ -13,11 +13,11 @@ public class RequestEvaluateTransactionJson
 
     public decimal Amount { get; set; }
 
-    public DateTime CreateAt { get; set; }
+    public DateTime CreatedAt { get; set; }
 
     public Currency Currency { get; set; }
 
     public PaymentType PaymentType { get; set; }
-    public CustomerRequest Customer { get; set; }
-    public MerchantRequest Merchant { get; set; }
+    public RequestCustomerJson Customer { get; set; }
+    public RequestMerchantJson Merchant { get; set; }
 }

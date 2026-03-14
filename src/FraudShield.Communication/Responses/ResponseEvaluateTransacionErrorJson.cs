@@ -4,11 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FraudShield.Domain.Enums;
+namespace FraudShield.Communication.Responses;
 
-public enum RiskLevel
+public class ResponseEvaluateTransacionErrorJson
 {
-    Low = 0,
-    Medium = 1,
-    High = 2
 }

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace FraudShield.Communication.Requests;
 
-public class CustomerRequest
+public class RequestCustomerJson
 {
     public string Document { get; set; }
     public string Email { get; set; }

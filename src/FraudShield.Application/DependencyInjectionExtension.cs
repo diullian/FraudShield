@@ -1,4 +1,7 @@
-﻿using FraudShield.Application.UseCases.Transaction;
+﻿using FraudShield.Application.Mapping;
+using FraudShield.Application.UseCases.Transaction;
+using Mapster;
+using MapsterMapper;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace FraudShield.Application;
@@ -8,7 +11,14 @@ public static class DependencyInjectionExtension
 
     public static void AddApplication(this IServiceCollection services)
     {
+        var config = TypeAdapterConfig.GlobalSettings;
+
         AddUseCases(services);
+
+        FinancialTransactionMappingConfig.Register(config); //registra mapster DI
+
+        services.AddSingleton(config);
+        services.AddScoped<IMapper, ServiceMapper>();
     }
 
     private static void AddUseCases(IServiceCollection services)

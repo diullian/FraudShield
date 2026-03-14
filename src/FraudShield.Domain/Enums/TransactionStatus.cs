@@ -6,9 +6,10 @@ using System.Threading.Tasks;
 
 namespace FraudShield.Domain.Enums;
 
-public enum RiskLevel
+public enum TransactionStatus
 {
-    Low = 0,
-    Medium = 1,
-    High = 2
+    Pending = 0,
+    Approved = 1,
+    Review = 2,
+    Rejected = 3
 }

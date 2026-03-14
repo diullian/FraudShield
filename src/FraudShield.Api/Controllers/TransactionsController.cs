@@ -1,5 +1,6 @@
 ﻿using FraudShield.Application.UseCases.Transaction;
 using FraudShield.Communication.Requests;
+using FraudShield.Communication.Responses;
 using FraudShield.Domain.Repositories.Transactions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -11,11 +12,12 @@ namespace FraudShield.Api.Controllers;
 public class TransactionsController : ControllerBase
 {
     [HttpPost]
-    public IActionResult Post(EvaluateTransactionUseCase useCase, RequestEvaluateTransactionJson request)
+    [ProducesResponseType(typeof(ResponseEvaluateTransactionJson), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> Post([FromServices] IEvaluateTransactionUseCase useCase, [FromBody] RequestEvaluateTransactionJson request)
     {
-
         var response = useCase.ExecuteAsync(request);
 
-        return Ok();
+        return Ok(response.Result);
     }
 }

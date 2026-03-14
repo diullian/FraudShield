@@ -4,16 +4,10 @@ using Mapster;
 
 namespace FraudShield.Application.Mapping;
 
-public class TransactionMappingConfig
+public class FinancialTransactionMappingConfig
 {
     public static void Register(TypeAdapterConfig config) 
     {
-        // Example mapping configuration
-        // config.NewConfig<RequestEvaluateTransactionJson, TransactionEntity>()
-        //     .Map(dest => dest.Amount, src => src.Amount)
-        //     .Map(dest => dest.CustomerDocument, src => src.Customer.Document)
-        //     .Map(dest => dest.MerchantName, src => src.Merchant.Name);
-
         config.NewConfig<RequestEvaluateTransactionJson, FinancialTransaction>()
                 .Map(dest => dest.Id, _ => Guid.NewGuid())
                 .Map(dest => dest.CreatedAt, _ => DateTime.UtcNow)
@@ -23,5 +17,12 @@ public class TransactionMappingConfig
                 .Map(dest => dest.PaymentType, src => (Domain.Enums.PaymentType)src.PaymentType)
                 .Map(dest => dest.Customer, src => src.Customer)
                 .Map(dest => dest.Merchant, src => src.Merchant);
+
+        config.NewConfig<RequestCustomerJson, Customer>()
+                .Map(dest => dest.Id, _ => Guid.NewGuid())
+                .Map(dest => dest.DeviceType, src => (Domain.Enums.DeviceType)src.DeviceType);
+       
+        config.NewConfig<RequestMerchantJson, Merchant>()
+                .Map(dest => dest.Id, _ => Guid.NewGuid());
     }
 }
