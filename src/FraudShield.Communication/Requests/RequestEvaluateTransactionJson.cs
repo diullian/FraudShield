@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FraudShield.Communication.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,7 +15,9 @@ public class RequestEvaluateTransactionJson
 
     public DateTime CreateAt { get; set; }
 
-    public CustomerRequest Customer { get; set; }
+    public Currency Currency { get; set; }
 
+    public PaymentType PaymentType { get; set; }
+    public CustomerRequest Customer { get; set; }
     public MerchantRequest Merchant { get; set; }
 }
