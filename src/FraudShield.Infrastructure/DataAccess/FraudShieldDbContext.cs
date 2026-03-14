@@ -15,7 +15,12 @@ public class FraudShieldDbContext : DbContext
         modelBuilder.Entity<FinancialTransaction>()
             .Property(t => t.Amount)
             .HasPrecision(18, 2);
-      
+        modelBuilder.Entity<FinancialTransaction>()
+              .OwnsOne(t => t.Customer);
+
+        modelBuilder.Entity<FinancialTransaction>()
+              .OwnsOne(t => t.Merchant);
+
 
     }
 }
