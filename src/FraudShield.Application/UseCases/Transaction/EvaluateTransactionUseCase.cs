@@ -1,5 +1,5 @@
-﻿using FraudShield.Application.Mapping;
-using FraudShield.Communication.Enums;
+﻿using FraudShield.Application.Messaging;
+using FraudShield.Communication.Events;
 using FraudShield.Communication.Requests;
 using FraudShield.Communication.Responses;
 using FraudShield.Domain.Entities;
@@ -12,15 +12,17 @@ public class EvaluateTransactionUseCase : IEvaluateTransactionUseCase
 {
 
     private readonly ITransactionsWriteOnlyRepository _repository;
+    private readonly IMessageBus _messageBus;
     private readonly IMapper _mapper;
 
-    public EvaluateTransactionUseCase(ITransactionsWriteOnlyRepository repository, IMapper mapper)
+    public EvaluateTransactionUseCase(ITransactionsWriteOnlyRepository repository, IMapper mapper, IMessageBus messageBus)
     {
         _repository = repository;
         _mapper = mapper;
+        _messageBus = messageBus;
     }
 
-    public async Task<ResponseEvaluateTransactionJson> ExecuteAsync(RequestEvaluateTransactionJson request)
+    public async Task<ResponseEvaluateTransactionJson> ExecuteAsync(RequestEvaluateTransactionJson request, CancellationToken ct = default)
     {
 
         Validate(request);
@@ -30,14 +32,11 @@ public class EvaluateTransactionUseCase : IEvaluateTransactionUseCase
         await _repository.AddTransactionAsync(transaction);
 
 
-        return _mapper.Map<ResponseEvaluateTransactionJson>(transaction);
-        //return Task.FromResult(new ResponseEvaluateTransactionJson
-        //{
-        //    TransactionId = transaction.Id,
-        //    Status = TransactionStatus.Pending,
-        //    Message = "Transaction received and being processed. Waiting please!!",
-        //});
+        var transactionEvent = _mapper.Map<TransactionCreatedEvent>(transaction);
+        await _messageBus.PublishAsync(transactionEvent, ct);
 
+
+        return _mapper.Map<ResponseEvaluateTransactionJson>(transaction);
     }
 
     private void Validate(RequestEvaluateTransactionJson request)

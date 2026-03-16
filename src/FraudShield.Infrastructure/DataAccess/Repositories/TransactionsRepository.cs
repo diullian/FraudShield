@@ -18,16 +18,15 @@ internal class TransactionsRepository : ITransactionsWriteOnlyRepository
     }
 
     
-    public async Task AddTransactionAsync(FinancialTransaction transaction)
+    public async Task AddTransactionAsync(FinancialTransaction transaction, CancellationToken ct = default)
     {
 
         if (transaction == null) {
             throw new ArgumentNullException();
         }
 
-        await _dbContext.FinancialTransactions.AddAsync(transaction);
+        await _dbContext.FinancialTransactions.AddAsync(transaction, ct);
 
         await _dbContext.SaveChangesAsync();
-
     }
 }

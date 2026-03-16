@@ -24,5 +24,24 @@ public class FinancialTransactionMappingConfig
        
         config.NewConfig<RequestMerchantJson, Merchant>()
                 .Map(dest => dest.Id, _ => Guid.NewGuid());
+
+        config.NewConfig<FinancialTransaction, Communication.Events.TransactionCreatedEvent>()
+                .Map(dest => dest.TransactionId, src => src.Id)
+                .Map(dest => dest.IdempotencyKey, src => src.IdempotencyKey)
+                .Map(dest => dest.Amount, src => src.Amount)
+                .Map(dest => dest.CreatedAt, src => src.CreatedAt)
+                .Map(dest => dest.Currency, src => src.Currency.ToString())
+                .Map(dest => dest.PaymentType, src => src.PaymentType.ToString())
+                .Map(dest => dest.CustomerDocument, src => src.Customer.Document)
+                .Map(dest => dest.CustomerEmail, src => src.Customer.Email)
+                .Map(dest => dest.CustomerIpAddress, src => src.Customer.IpAddress)
+                .Map(dest => dest.CustomerDevice, src => src.Customer.DeviceType.ToString())
+                .Map(dest => dest.CustomerCountry, src => src.Customer.Country)
+                .Map(dest => dest.MerchantName, src => src.Merchant.Name)
+                .Map(dest => dest.MerchantCategory, src => src.Merchant.Category)
+                .Map(dest => dest.MerchantCountry, src => src.Merchant.Country)
+                .Map(dest => dest.MerchantState, src => src.Merchant.State)
+                .Map(dest => dest.MerchantCity, src => src.Merchant.City);
+
     }
 }

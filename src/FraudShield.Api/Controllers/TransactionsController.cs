@@ -14,9 +14,9 @@ public class TransactionsController : ControllerBase
     [HttpPost]
     [ProducesResponseType(typeof(ResponseEvaluateTransactionJson), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> Post([FromServices] IEvaluateTransactionUseCase useCase, [FromBody] RequestEvaluateTransactionJson request)
+    public async Task<IActionResult> Post([FromServices] IEvaluateTransactionUseCase useCase, [FromBody] RequestEvaluateTransactionJson request, CancellationToken ct)
     {
-        var response = useCase.ExecuteAsync(request);
+        var response = useCase.ExecuteAsync(request, ct);
 
         return Ok(response.Result);
     }

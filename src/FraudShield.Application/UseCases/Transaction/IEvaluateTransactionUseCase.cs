@@ -5,5 +5,5 @@ namespace FraudShield.Application.UseCases.Transaction;
 
 public interface IEvaluateTransactionUseCase
 {
-    Task<ResponseEvaluateTransactionJson> ExecuteAsync(RequestEvaluateTransactionJson request);
+    Task<ResponseEvaluateTransactionJson> ExecuteAsync(RequestEvaluateTransactionJson request, CancellationToken ct = default);
 }
