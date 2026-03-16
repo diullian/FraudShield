@@ -1,10 +1,10 @@
 namespace FraudShield.Worker;
 
-public class Worker : BackgroundService
+public class FraudWorker : BackgroundService
 {
-    private readonly ILogger<Worker> _logger;
+    private readonly ILogger<FraudWorker> _logger;
 
-    public Worker(ILogger<Worker> logger)
+    public FraudWorker(ILogger<FraudWorker> logger)
     {
         _logger = logger;
     }

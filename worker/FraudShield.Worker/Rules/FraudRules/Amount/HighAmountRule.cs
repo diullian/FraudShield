@@ -23,6 +23,7 @@ public class HighAmountRule : IFraudRule
                 Name = Name,
                 Triggered = true,
                 Decision = FraudDecision.Rejected,
+                RiskLevel = RiskLevel.High,
                 Reason = $"Transaction amount {transaction.Amount} exceeds the threshold."
             };
         }
