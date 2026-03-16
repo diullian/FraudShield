@@ -1,4 +1,5 @@
 ﻿using FraudShield.Communication.Requests;
+using FraudShield.Contracts.Events;
 using FraudShield.Domain.Entities;
 using Mapster;
 
@@ -25,7 +26,7 @@ public class FinancialTransactionMappingConfig
         config.NewConfig<RequestMerchantJson, Merchant>()
                 .Map(dest => dest.Id, _ => Guid.NewGuid());
 
-        config.NewConfig<FinancialTransaction, Communication.Events.TransactionCreatedEvent>()
+        config.NewConfig<FinancialTransaction, TransactionCreatedEvent>()
                 .Map(dest => dest.TransactionId, src => src.Id)
                 .Map(dest => dest.IdempotencyKey, src => src.IdempotencyKey)
                 .Map(dest => dest.Amount, src => src.Amount)

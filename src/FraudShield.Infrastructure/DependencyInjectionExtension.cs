@@ -1,4 +1,5 @@
 ﻿using FraudShield.Application.Messaging;
+using FraudShield.Contracts.Events;
 using FraudShield.Domain.Repositories.Transactions;
 using FraudShield.Infrastructure.DataAccess;
 using FraudShield.Infrastructure.DataAccess.Repositories;
@@ -43,7 +44,13 @@ public static class DependencyInjectionExtension
                     h.Username(configuration["RabbitMq:Username"]);
                     h.Password(configuration["RabbitMq:Password"]);
                 });
+
+                cfg.Message<TransactionCreatedEvent>(x =>
+                {
+                    x.SetEntityName("antifraude-validator");
+                });
             });
+
         });
     }
 }
