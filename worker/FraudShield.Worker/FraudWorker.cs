@@ -1,4 +1,4 @@
-using FraudShield.Contracts.Events;
+using FraudShield.Worker.Contracts;
 using FraudShield.Worker.Rules;
 using FraudShield.Worker.Validation;
 using MassTransit;

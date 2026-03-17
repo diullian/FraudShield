@@ -22,6 +22,10 @@ public class FraudShieldDbContext : DbContext
             .HasConversion<string>();
 
         modelBuilder.Entity<FinancialTransaction>()
+         .Property(t => t.RiskLevel)
+         .HasConversion<string>();
+
+        modelBuilder.Entity<FinancialTransaction>()
             .Property(t => t.PaymentType)
             .HasConversion<string>();
 

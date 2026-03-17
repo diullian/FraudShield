@@ -1,4 +1,4 @@
-using FraudShield.Contracts.Events;
+using FraudShield.Worker.Contracts;
 using FraudShield.Worker;
 using FraudShield.Worker.Rules;
 using FraudShield.Worker.Validation;
@@ -23,8 +23,14 @@ builder.Services.AddMassTransit(x =>
             h.Password(builder.Configuration["RabbitMq:Password"]);
         });
 
+        // serialização global pro Worker
+        cfg.UseRawJsonSerializer(
+            RawSerializerOptions.AnyMessageType,
+            isDefault: true);
+
         cfg.ReceiveEndpoint("antifraude-validator", e =>
         {
+            e.UseRawJsonDeserializer(RawSerializerOptions.AnyMessageType);
             e.ConfigureConsumer<FraudWorker>(context);
         });
 
@@ -34,7 +40,10 @@ builder.Services.AddMassTransit(x =>
             e.SetEntityName("fraud-evaluated-results");
         });
 
-        //cfg.ConfigureEndpoints(context);
+        cfg.Publish<FraudEvaluatedResultEvent>(x =>
+        {
+            x.ExchangeType = "fanout";
+        });
     });
 });
 

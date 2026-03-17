@@ -20,7 +20,7 @@ namespace FraudShield.Infrastructure.Migrations
                     Amount = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    RiskLevel = table.Column<int>(type: "int", nullable: false),
+                    RiskLevel = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ProcessedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     Currency = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     PaymentType = table.Column<string>(type: "nvarchar(max)", nullable: false),

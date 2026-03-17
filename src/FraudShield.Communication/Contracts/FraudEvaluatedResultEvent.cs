@@ -1,4 +1,4 @@
-﻿namespace FraudShield.Contracts.Events;
+﻿namespace FraudShield.Communication.Contracts;
 
 public class FraudEvaluatedResultEvent
 {

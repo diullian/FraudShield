@@ -1,4 +1,4 @@
-﻿using FraudShield.Contracts.Events;
+﻿using FraudShield.Communication.Contracts;
 using FraudShield.Domain.Repositories.Transactions;
 using MassTransit;
 using Microsoft.Extensions.Logging;

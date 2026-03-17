@@ -1,5 +1,5 @@
-﻿using FraudShield.Communication.Requests;
-using FraudShield.Contracts.Events;
+﻿using FraudShield.Communication.Contracts;
+using FraudShield.Communication.Requests;
 using FraudShield.Domain.Entities;
 using Mapster;
 

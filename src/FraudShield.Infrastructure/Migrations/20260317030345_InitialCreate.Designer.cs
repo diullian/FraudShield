@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FraudShield.Infrastructure.Migrations
 {
     [DbContext(typeof(FraudShieldDbContext))]
-    [Migration("20260317021434_InitialCreate")]
+    [Migration("20260317030345_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -53,8 +53,9 @@ namespace FraudShield.Infrastructure.Migrations
                     b.Property<DateTime?>("ProcessedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("RiskLevel")
-                        .HasColumnType("int");
+                    b.Property<string>("RiskLevel")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Status")
                         .IsRequired()

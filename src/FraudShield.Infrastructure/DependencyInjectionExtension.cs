@@ -1,5 +1,5 @@
 ﻿using FraudShield.Application.Messaging;
-using FraudShield.Contracts.Events;
+using FraudShield.Communication.Contracts;
 using FraudShield.Domain.Repositories.Transactions;
 using FraudShield.Infrastructure.DataAccess;
 using FraudShield.Infrastructure.DataAccess.Repositories;
@@ -49,24 +49,20 @@ public static class DependencyInjectionExtension
                     h.Password(configuration["RabbitMq:Password"]);
                 });
 
+                cfg.UseRawJsonSerializer(
+                 RawSerializerOptions.AnyMessageType,
+                 isDefault: true); 
+
                 cfg.Message<TransactionCreatedEvent>(x =>
                 {
                     x.SetEntityName("antifraude-validator");
                 });
 
-
-                //cfg.Message<FraudEvaluatedResultEvent>(x =>
-                //{
-                //    x.SetEntityName("fraud-evaluated-results"); //  mesmo nome do Worker
-                //});
-
-                // ← faltou isso!
                 cfg.ReceiveEndpoint("fraud-evaluated-results", e =>
                 {
+                    e.UseRawJsonDeserializer(RawSerializerOptions.AnyMessageType);
                     e.ConfigureConsumer<FraudResultConsumer>(context);
                 });
-
-                //cfg.ConfigureEndpoints(context);
             });
 
         });

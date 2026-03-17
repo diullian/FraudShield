@@ -1,4 +1,4 @@
-﻿using FraudShield.Contracts.Events;
+﻿using FraudShield.Worker.Contracts;
 using FraudShield.Worker.Enums;
 
 namespace FraudShield.Worker.Rules.FraudRules.Amount;

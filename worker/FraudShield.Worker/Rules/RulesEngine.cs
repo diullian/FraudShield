@@ -1,4 +1,4 @@
-﻿using FraudShield.Contracts.Events;
+﻿using FraudShield.Worker.Contracts;
 using FraudShield.Worker.Enums;
 using System;
 using System.Collections.Generic;
@@ -18,7 +18,6 @@ public class RulesEngine : IRulesEngine
 
     public async Task<FraudEvaluationResult> ValidateTransaction(TransactionCreatedEvent transaction)
     {
-
         var evaluationResult = new FraudEvaluationResult
         {
             TransactionId = transaction.TransactionId,

@@ -1,7 +1,7 @@
 ﻿using FraudShield.Application.Messaging;
+using FraudShield.Communication.Contracts;
 using FraudShield.Communication.Requests;
 using FraudShield.Communication.Responses;
-using FraudShield.Contracts.Events;
 using FraudShield.Domain.Entities;
 using FraudShield.Domain.Repositories.Transactions;
 using MapsterMapper;
