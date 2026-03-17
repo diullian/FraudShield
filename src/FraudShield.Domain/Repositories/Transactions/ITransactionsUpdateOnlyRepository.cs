@@ -1,4 +1,5 @@
 ﻿using FraudShield.Domain.Entities;
+using FraudShield.Domain.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,5 +10,5 @@ namespace FraudShield.Domain.Repositories.Transactions;
 
 public interface ITransactionsUpdateOnlyRepository
 {
-    Task Update(FinancialTransaction transaction);
+    Task UpdateStatusAsync(Guid transactionId, TransactionStatus status, RiskLevel riskLevel, DateTime processedAt,  CancellationToken ct = default);
 }

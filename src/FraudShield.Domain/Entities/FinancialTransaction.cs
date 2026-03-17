@@ -17,6 +17,8 @@ public class FinancialTransaction
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
     public TransactionStatus Status { get; set; } = TransactionStatus.Pending;
+    public RiskLevel RiskLevel { get; set; } = RiskLevel.Low;
+    public DateTime? ProcessedAt { get; set; }
     public Currency Currency { get; set; }
     public required PaymentType PaymentType { get; init; }
     public required Customer Customer { get; set; }

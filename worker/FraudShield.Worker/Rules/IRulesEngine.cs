@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using FraudShield.Contracts.Events;
 
 namespace FraudShield.Worker.Rules;
 
 public interface IRulesEngine
 {
-    //Task Validate()
+    Task<FraudEvaluationResult> ValidateTransaction(TransactionCreatedEvent transaction);
 }

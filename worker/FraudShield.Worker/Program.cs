@@ -1,11 +1,15 @@
+using FraudShield.Contracts.Events;
 using FraudShield.Worker;
-using FraudShield.Worker.Contracts;
+using FraudShield.Worker.Rules;
 using FraudShield.Worker.Validation;
 using MassTransit;
 
 var builder = Host.CreateApplicationBuilder(args);
 
 builder.Services.AddScoped<IEventValidator, EventValidator>();
+builder.Services.AddScoped<IRulesEngine, RulesEngine>();
+
+builder.Services.AddWorkerService(); //adicionando regras 
 
 builder.Services.AddMassTransit(x =>
 {
@@ -21,8 +25,13 @@ builder.Services.AddMassTransit(x =>
 
         cfg.ReceiveEndpoint("antifraude-validator", e =>
         {
-            //e.UseRawJsonDeserializer();
             e.ConfigureConsumer<FraudWorker>(context);
+        });
+
+
+        cfg.Message<FraudEvaluatedResultEvent>(e =>
+        {
+            e.SetEntityName("fraud-evaluated-results");
         });
 
         //cfg.ConfigureEndpoints(context);

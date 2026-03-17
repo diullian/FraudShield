@@ -4,6 +4,7 @@ using FraudShield.Domain.Repositories.Transactions;
 using FraudShield.Infrastructure.DataAccess;
 using FraudShield.Infrastructure.DataAccess.Repositories;
 using FraudShield.Infrastructure.Messaging;
+using FraudShield.Infrastructure.Messaging.Consumers;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -24,6 +25,7 @@ public static class DependencyInjectionExtension
     private static void AddRepositories(IServiceCollection services)
     {
         services.AddScoped<ITransactionsWriteOnlyRepository, TransactionsRepository>();
+        services.AddScoped<ITransactionsUpdateOnlyRepository, TransactionsRepository>();
         services.AddScoped<IMessageBus, RabbitMqMessageBus>();
     }
 
@@ -37,6 +39,8 @@ public static class DependencyInjectionExtension
     {
         services.AddMassTransit(x =>
         {
+            x.AddConsumer<FraudResultConsumer>();
+
             x.UsingRabbitMq((context, cfg) =>
             {
                 cfg.Host(configuration["RabbitMq:Host"], "/", h =>
@@ -49,6 +53,20 @@ public static class DependencyInjectionExtension
                 {
                     x.SetEntityName("antifraude-validator");
                 });
+
+
+                //cfg.Message<FraudEvaluatedResultEvent>(x =>
+                //{
+                //    x.SetEntityName("fraud-evaluated-results"); //  mesmo nome do Worker
+                //});
+
+                // ← faltou isso!
+                cfg.ReceiveEndpoint("fraud-evaluated-results", e =>
+                {
+                    e.ConfigureConsumer<FraudResultConsumer>(context);
+                });
+
+                //cfg.ConfigureEndpoints(context);
             });
 
         });
