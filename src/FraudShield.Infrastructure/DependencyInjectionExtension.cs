@@ -26,6 +26,7 @@ public static class DependencyInjectionExtension
     {
         services.AddScoped<ITransactionsWriteOnlyRepository, TransactionsRepository>();
         services.AddScoped<ITransactionsUpdateOnlyRepository, TransactionsRepository>();
+        services.AddScoped<ITransactionsReadOnlyRepository, TransactionsRepository>();
         services.AddScoped<IMessageBus, RabbitMqMessageBus>();
     }
 

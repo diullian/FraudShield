@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FraudShield.Domain.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,4 +9,7 @@ namespace FraudShield.Domain.Repositories.Transactions;
 
 public interface ITransactionsReadOnlyRepository
 {
+    Task<List<FinancialTransaction>> GetAll(CancellationToken ct = default);
+
+    Task<FinancialTransaction?> GetById(Guid transactionId, CancellationToken ct = default);
 }

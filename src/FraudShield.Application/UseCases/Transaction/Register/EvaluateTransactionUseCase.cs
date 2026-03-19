@@ -7,7 +7,7 @@ using FraudShield.Domain.Entities;
 using FraudShield.Domain.Repositories.Transactions;
 using MapsterMapper;
 
-namespace FraudShield.Application.UseCases.Transaction;
+namespace FraudShield.Application.UseCases.Transaction.Register;
 
 public class EvaluateTransactionUseCase : IEvaluateTransactionUseCase
 {

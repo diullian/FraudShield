@@ -1,5 +1,6 @@
 ﻿using FraudShield.Communication.Contracts;
 using FraudShield.Communication.Requests;
+using FraudShield.Communication.Responses;
 using FraudShield.Domain.Entities;
 using Mapster;
 
@@ -42,6 +43,16 @@ public class FinancialTransactionMappingConfig
                 .Map(dest => dest.MerchantCountry, src => src.Merchant.Country)
                 .Map(dest => dest.MerchantState, src => src.Merchant.State)
                 .Map(dest => dest.MerchantCity, src => src.Merchant.City);
+        //ResponseShortTransactionJson
+
+        config.NewConfig<FinancialTransaction, ResponseShortTransactionJson>()
+                .Map(dest => dest.TransactionId, src => src.Id)
+                .Map(dest => dest.Amount, src => src.Amount)
+                .Map(dest => dest.RiskLevel, src => src.RiskLevel.ToString())
+                .Map(dest => dest.Status, src => src.Status)
+                .Map(dest => dest.CustomerEmail, src => src.Customer.Email)
+                .Map(dest => dest.PaymentType, src => src.PaymentType.ToString())
+                .Map(dest => dest.CreatedAt, src => src.CreatedAt);
 
     }
 }
