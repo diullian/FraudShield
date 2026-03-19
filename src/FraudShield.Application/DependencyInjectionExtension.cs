@@ -1,5 +1,7 @@
 ﻿using FraudShield.Application.Mapping;
-using FraudShield.Application.UseCases.Transaction;
+using FraudShield.Application.UseCases.Transaction.GetAll;
+using FraudShield.Application.UseCases.Transaction.GetById;
+using FraudShield.Application.UseCases.Transaction.Register;
 using Mapster;
 using MapsterMapper;
 using Microsoft.Extensions.DependencyInjection;
@@ -24,6 +26,8 @@ public static class DependencyInjectionExtension
     private static void AddUseCases(IServiceCollection services)
     {
         services.AddScoped<IEvaluateTransactionUseCase, EvaluateTransactionUseCase>();
+        services.AddScoped<IGetAllTransactionsUseCase, GetAllTransactionsUseCase>();
+        services.AddScoped<IGetTransactionsByIdUseCase, GetTransactionsByIdUseCase>();
     }
 
 

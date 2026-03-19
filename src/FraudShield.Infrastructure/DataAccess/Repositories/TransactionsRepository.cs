@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FraudShield.Infrastructure.DataAccess.Repositories;
 
-internal class TransactionsRepository : ITransactionsWriteOnlyRepository, ITransactionsUpdateOnlyRepository
+internal class TransactionsRepository : ITransactionsWriteOnlyRepository, ITransactionsUpdateOnlyRepository, ITransactionsReadOnlyRepository
 {
     private readonly FraudShieldDbContext _dbContext;
 
@@ -26,6 +26,18 @@ internal class TransactionsRepository : ITransactionsWriteOnlyRepository, ITrans
         await _dbContext.FinancialTransactions.AddAsync(transaction, ct);
 
         await _dbContext.SaveChangesAsync();
+    }
+
+    public async Task<List<FinancialTransaction>> GetAll(CancellationToken ct = default)
+    {
+        var transactions = await _dbContext.FinancialTransactions.AsNoTracking().ToListAsync(ct);
+
+        return transactions;
+    }
+
+    public async Task<FinancialTransaction?> GetById(Guid transactionId, CancellationToken ct = default)
+    {
+        return await _dbContext.FinancialTransactions.AsNoTracking().FirstOrDefaultAsync(t => t.Id == transactionId, ct);
     }
 
     public async Task UpdateStatusAsync(Guid transactionId, TransactionStatus status, RiskLevel riskLevel, DateTime processedAt , CancellationToken ct = default)

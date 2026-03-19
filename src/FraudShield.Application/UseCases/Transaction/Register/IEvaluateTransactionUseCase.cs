@@ -1,7 +1,7 @@
 using FraudShield.Communication.Requests;
 using FraudShield.Communication.Responses;
 
-namespace FraudShield.Application.UseCases.Transaction;
+namespace FraudShield.Application.UseCases.Transaction.Register;
 
 public interface IEvaluateTransactionUseCase
 {
