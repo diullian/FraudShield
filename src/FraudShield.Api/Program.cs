@@ -1,5 +1,8 @@
+using FraudShield.Api.Middleware;
 using FraudShield.Application;
+using FraudShield.Application.Interfaces;
 using FraudShield.Infrastructure;
+using FraudShield.Infrastructure.Http;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,8 +26,11 @@ builder.Services.AddInfrastructure(builder.Configuration);
 
 //Add application services
 builder.Services.AddApplication();
+builder.Services.AddScoped<ICorrelationContext, CorrelationContext>();
 
 var app = builder.Build();
+
+app.UseMiddleware<CorrelationIdMiddleware>();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

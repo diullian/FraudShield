@@ -30,6 +30,13 @@ builder.Services.AddMassTransit(x =>
 
         cfg.ReceiveEndpoint("antifraude-validator", e =>
         {
+            e.UseMessageRetry(r => 
+                r.Exponential(3, 
+                    TimeSpan.FromSeconds(2), 
+                    TimeSpan.FromSeconds(10), 
+                    TimeSpan.FromSeconds(2))
+            );
+            
             e.UseRawJsonDeserializer(RawSerializerOptions.AnyMessageType);
             e.ConfigureConsumer<FraudWorker>(context);
         });

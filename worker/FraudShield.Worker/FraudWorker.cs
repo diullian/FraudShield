@@ -31,10 +31,10 @@ public class FraudWorker : IConsumer<TransactionCreatedEvent>
 
         if (!validation.IsValid)
         {
-
             _logger.LogWarning(
                 "Invalid contract: {Errors}",
                 string.Join(", ", validation.ErrorMessage));
+
             return;
         }
         

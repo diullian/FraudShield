@@ -11,5 +11,6 @@ public enum TransactionStatus
     Pending = 0,
     Approved = 1,
     Review = 2,
-    Rejected = 3
+    Rejected = 3,
+    Cancelled = 4
 }
