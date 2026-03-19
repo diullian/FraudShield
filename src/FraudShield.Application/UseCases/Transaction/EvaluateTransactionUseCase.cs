@@ -1,4 +1,4 @@
-﻿using FraudShield.Application.Interfaces;
+using FraudShield.Application.Interfaces;
 using FraudShield.Application.Messaging;
 using FraudShield.Communication.Contracts;
 using FraudShield.Communication.Requests;
@@ -24,12 +24,18 @@ public class EvaluateTransactionUseCase : IEvaluateTransactionUseCase
         _correlation = correlation;
     }
 
-    public async Task<ResponseEvaluateTransactionJson> ExecuteAsync(RequestEvaluateTransactionJson request, CancellationToken ct = default)
+    public async Task<ResponseEvaluateTransactionJson> ExecuteAsync(
+        RequestEvaluateTransactionJson request,
+        string idempotencyKey,
+        CancellationToken ct = default)
     {
         Validate(request);
+        if (string.IsNullOrWhiteSpace(idempotencyKey))
+            throw new ArgumentException("Idempotency key is required.", nameof(idempotencyKey));
 
         //salva a transação no banco de dados
         var transaction = _mapper.Map<FinancialTransaction>(request);
+        transaction.IdempotencyKey = idempotencyKey;
 
         // atribui CorrelationId
         transaction.CorrelationId = Guid.TryParse(_correlation.CorrelationId, out var guid)
