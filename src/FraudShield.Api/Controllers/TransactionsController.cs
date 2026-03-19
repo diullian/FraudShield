@@ -1,4 +1,4 @@
-﻿using FraudShield.Application.UseCases.Transaction;
+using FraudShield.Application.UseCases.Transaction;
 using FraudShield.Communication.Requests;
 using FraudShield.Communication.Responses;
 using FraudShield.Domain.Repositories.Transactions;
@@ -14,10 +14,13 @@ public class TransactionsController : ControllerBase
     [HttpPost]
     [ProducesResponseType(typeof(ResponseEvaluateTransactionJson), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> Post([FromServices] IEvaluateTransactionUseCase useCase, [FromBody] RequestEvaluateTransactionJson request, CancellationToken ct)
+    public async Task<IActionResult> Post(
+        [FromServices] IEvaluateTransactionUseCase useCase,
+        [FromBody] RequestEvaluateTransactionJson request,
+        [FromHeader(Name = "Idempotency-Key")] string idempotencyKey,
+        CancellationToken ct)
     {
-        var response = useCase.ExecuteAsync(request, ct);
-
-        return Ok(response.Result);
+        var response = await useCase.ExecuteAsync(request, idempotencyKey, ct);
+        return Ok(response);
     }
 }

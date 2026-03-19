@@ -2,6 +2,7 @@ using FraudShield.Api.Middleware;
 using FraudShield.Application;
 using FraudShield.Application.Interfaces;
 using FraudShield.Infrastructure;
+using FraudShield.Infrastructure.Idempotency;
 using FraudShield.Infrastructure.Http;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -28,9 +29,17 @@ builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddApplication();
 builder.Services.AddScoped<ICorrelationContext, CorrelationContext>();
 
+var redisConnectionString = builder.Configuration.GetConnectionString("Redis") ?? "localhost:6379";
+builder.Services.AddStackExchangeRedisCache(options =>
+{
+    options.Configuration = redisConnectionString;
+});
+builder.Services.AddScoped<IIdempotencyStore, RedisIdempotencyStore>();
+
 var app = builder.Build();
 
 app.UseMiddleware<CorrelationIdMiddleware>();
+app.UseMiddleware<IdempotencyMiddleware>();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

@@ -13,6 +13,10 @@ public class FraudShieldDbContext : DbContext
     {
         base.OnModelCreating(modelBuilder);
 
+        //chave única idempotency key para evitar transações duplicadas
+        modelBuilder.Entity<FinancialTransaction>()
+            .HasIndex(t => t.IdempotencyKey).IsUnique();
+
         modelBuilder.Entity<FinancialTransaction>()
               .Property(t => t.Amount)
               .HasPrecision(18, 2);
