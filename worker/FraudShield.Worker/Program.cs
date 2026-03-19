@@ -3,6 +3,7 @@ using FraudShield.Worker;
 using FraudShield.Worker.Rules;
 using FraudShield.Worker.Validation;
 using MassTransit;
+using FraudShield.Worker.Context;
 
 var builder = Host.CreateApplicationBuilder(args);
 
@@ -10,6 +11,8 @@ builder.Services.AddScoped<IEventValidator, EventValidator>();
 builder.Services.AddScoped<IRulesEngine, RulesEngine>();
 
 builder.Services.AddWorkerService(); //adicionando regras 
+
+builder.Services.AddScoped<CorrelationContext>(); // contexto para armazenar o CorrelationId durante o processamento
 
 builder.Services.AddMassTransit(x =>
 {
@@ -30,6 +33,13 @@ builder.Services.AddMassTransit(x =>
 
         cfg.ReceiveEndpoint("antifraude-validator", e =>
         {
+            e.UseMessageRetry(r => 
+                r.Exponential(3, 
+                    TimeSpan.FromSeconds(2), 
+                    TimeSpan.FromSeconds(10), 
+                    TimeSpan.FromSeconds(2))
+            );
+            
             e.UseRawJsonDeserializer(RawSerializerOptions.AnyMessageType);
             e.ConfigureConsumer<FraudWorker>(context);
         });

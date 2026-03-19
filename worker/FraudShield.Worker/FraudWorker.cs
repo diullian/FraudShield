@@ -1,3 +1,4 @@
+using FraudShield.Worker.Context;
 using FraudShield.Worker.Contracts;
 using FraudShield.Worker.Rules;
 using FraudShield.Worker.Validation;
@@ -11,30 +12,41 @@ public class FraudWorker : IConsumer<TransactionCreatedEvent>
     private readonly IEventValidator _eventValidator;
     private readonly IRulesEngine _rulesEngine;
     private readonly IPublishEndpoint _publishEndpoint;
+    private readonly CorrelationContext _correlationContext;
 
-    public FraudWorker(ILogger<FraudWorker> logger, IEventValidator validator, IRulesEngine rulesEngine, IPublishEndpoint publishEndpoint)
+    public FraudWorker(ILogger<FraudWorker> logger, IEventValidator validator, IRulesEngine rulesEngine, IPublishEndpoint publishEndpoint, CorrelationContext correlationContext)
     {
         _logger = logger;
         _eventValidator = validator;
         _rulesEngine = rulesEngine;
         _publishEndpoint = publishEndpoint;
+        _correlationContext = correlationContext;
     }
 
     public async Task Consume(ConsumeContext<TransactionCreatedEvent> context)
     {
+        if(context.CorrelationId == null)
+        {
+            _logger.LogWarning("Received message without **CorrelationId**. Message will be ignored.");
+            return;
+        }
+
+        //armazena o CorrelationId no contexto para que possa ser acessado em outros pontos do processamento
+        _correlationContext.Initialize(context.CorrelationId?.ToString());
+
         var transaction = context.Message;
 
-        _logger.LogInformation("Received transaction: {TransactionId}", transaction.TransactionId);
+        _logger.LogInformation("Received transaction: {TransactionId} || CorrelationId {CorrelationId}", transaction.TransactionId, _correlationContext.CorrelationId);
 
         //valida se o contrato recebido é válido
         var validation = _eventValidator.Validate(transaction);
 
         if (!validation.IsValid)
         {
-
             _logger.LogWarning(
                 "Invalid contract: {Errors}",
                 string.Join(", ", validation.ErrorMessage));
+
             return;
         }
         
@@ -65,11 +77,17 @@ public class FraudWorker : IConsumer<TransactionCreatedEvent>
             Status = resultTransaction.Decision.ToString(),
             RiskLevel = resultTransaction.RiskLevel.ToString(),
             CreatedAt = transaction.CreatedAt
-        }; 
+        };
 
-        //após processar as regras, publica o resultado para que outros serviços possam consumir
-        await _publishEndpoint.Publish(fraudFinalResult);
-
+       
+        // Em produção, substituiríamos IPublishEndpoint por uma abstração IMessageBus
+        // para encapsular a propagação do CorrelationId automaticamente em todos os publishes,
+        // seguindo o mesmo padrão já adotado na API.
+        await _publishEndpoint.Publish(fraudFinalResult, ctx =>
+        {
+            if (Guid.TryParse(_correlationContext.CorrelationId, out var guid))
+                ctx.CorrelationId = guid;
+        });
     }
 
 }

@@ -1,4 +1,5 @@
-﻿using FraudShield.Communication.Contracts;
+﻿using FraudShield.Application.Interfaces;
+using FraudShield.Communication.Contracts;
 using FraudShield.Domain.Repositories.Transactions;
 using MassTransit;
 using Microsoft.Extensions.Logging;
@@ -8,19 +9,24 @@ namespace FraudShield.Infrastructure.Messaging.Consumers;
 public class FraudResultConsumer : IConsumer<FraudEvaluatedResultEvent>
 {
     private readonly ITransactionsUpdateOnlyRepository _transactionsUpdateOnlyRepository;
+    private readonly ICorrelationContext _correlationContext;
     private readonly ILogger<FraudResultConsumer> _logger;
-    public FraudResultConsumer(ITransactionsUpdateOnlyRepository transactionUpdateRepository, ILogger<FraudResultConsumer> logger)
+    public FraudResultConsumer(ITransactionsUpdateOnlyRepository transactionUpdateRepository, ILogger<FraudResultConsumer> logger, ICorrelationContext correlationContext)
     {
         _transactionsUpdateOnlyRepository = transactionUpdateRepository;   
         _logger = logger;
+        _correlationContext = correlationContext;
     }
 
     public async Task Consume(ConsumeContext<FraudEvaluatedResultEvent> context)
     {
+        var correlationId = context.CorrelationId?.ToString() ?? "N/A";
 
-        _logger.LogInformation("----> Iniciando Consume do transact.id : {TransactionId}", context.Message.TransactionId);
+
+        _logger.LogInformation("[*** RESULTADO - Consume API ***]");
+        _logger.LogInformation("Iniciando Consume do transact.id : {TransactionId}  <> CorrelationId: {CorrelationId}", context.Message.TransactionId, correlationId);
         await Task.Delay(TimeSpan.FromSeconds(10)); // Simula um processamento mais demorado
-        _logger.LogInformation("----> Após 10 segundos, segue o fluxo");
+        _logger.LogInformation("");
 
 
         if (!Enum.TryParse< Domain.Enums.TransactionStatus> (context.Message.Status, out var status))
