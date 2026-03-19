@@ -30,6 +30,12 @@ public class EvaluateTransactionUseCase : IEvaluateTransactionUseCase
 
         //salva a transação no banco de dados
         var transaction = _mapper.Map<FinancialTransaction>(request);
+
+        // atribui CorrelationId
+        transaction.CorrelationId = Guid.TryParse(_correlation.CorrelationId, out var guid)
+            ? guid
+            : Guid.NewGuid();
+
         await _repository.AddTransactionAsync(transaction);
 
         //publica o evento de transação criada para o barramento de mensagens

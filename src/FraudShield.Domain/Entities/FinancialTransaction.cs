@@ -11,6 +11,7 @@ public class FinancialTransaction
 {
 
     public Guid Id { get; set; }
+    public Guid CorrelationId { get; set; }
     public string IdempotencyKey { get; set; }
     public decimal Amount { get; set; }
     

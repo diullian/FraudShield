@@ -3,6 +3,7 @@ using FraudShield.Worker;
 using FraudShield.Worker.Rules;
 using FraudShield.Worker.Validation;
 using MassTransit;
+using FraudShield.Worker.Context;
 
 var builder = Host.CreateApplicationBuilder(args);
 
@@ -10,6 +11,8 @@ builder.Services.AddScoped<IEventValidator, EventValidator>();
 builder.Services.AddScoped<IRulesEngine, RulesEngine>();
 
 builder.Services.AddWorkerService(); //adicionando regras 
+
+builder.Services.AddScoped<CorrelationContext>(); // contexto para armazenar o CorrelationId durante o processamento
 
 builder.Services.AddMassTransit(x =>
 {

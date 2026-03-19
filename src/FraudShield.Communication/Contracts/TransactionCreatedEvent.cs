@@ -4,7 +4,9 @@ public  class TransactionCreatedEvent
 {
 
     public Guid TransactionId { get; set; }
+    public Guid CorrelationId { get; set; }
     public string IdempotencyKey { get; set; }
+    
     public decimal Amount { get; set; }
     public DateTime CreatedAt { get; set; }
     public string Currency { get; set; }
