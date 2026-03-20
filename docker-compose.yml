@@ -109,7 +109,7 @@ services:
       RabbitMq__Username: "guest"
       RabbitMq__Password: "guest"
       MongoSettings__ConnectionString: "mongodb://admin:admin123@mongodb:27017"
-      MongoSettings__DatabaseName: "fraudshield_audit"
+      MongoSettings__DatabaseName: "fraudshield_audits"
     depends_on:
       rabbitmq:
         condition: service_healthy
