@@ -1,0 +1,24 @@
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
+WORKDIR /app
+EXPOSE 8080
+
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+WORKDIR /src
+
+COPY src/FraudShield.Api/FraudShield.Api.csproj                         src/FraudShield.Api/
+COPY src/FraudShield.Application/FraudShield.Application.csproj         src/FraudShield.Application/
+COPY src/FraudShield.Communication/FraudShield.Communication.csproj     src/FraudShield.Communication/
+COPY src/FraudShield.Domain/FraudShield.Domain.csproj                   src/FraudShield.Domain/
+COPY src/FraudShield.Infrastructure/FraudShield.Infrastructure.csproj   src/FraudShield.Infrastructure/
+
+RUN dotnet restore src/FraudShield.Api/FraudShield.Api.csproj
+
+COPY src/ src/
+
+RUN dotnet publish src/FraudShield.Api/FraudShield.Api.csproj \
+    -c Release -o /app/publish
+
+FROM base AS final
+WORKDIR /app
+COPY --from=build /app/publish .
+ENTRYPOINT ["dotnet", "FraudShield.Api.dll"]
