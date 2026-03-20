@@ -1,3 +1,4 @@
+using FraudShield.Api.Exceptions;
 using FraudShield.Api.Middleware;
 using FraudShield.Application;
 using FraudShield.Application.Interfaces;
@@ -38,8 +39,12 @@ builder.Services.AddStackExchangeRedisCache(options =>
 });
 builder.Services.AddScoped<IIdempotencyStore, RedisIdempotencyStore>();
 
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+builder.Services.AddProblemDetails();
+
 var app = builder.Build();
 
+app.UseExceptionHandler();
 app.UseMiddleware<CorrelationIdMiddleware>();
 app.UseMiddleware<IdempotencyMiddleware>();
 

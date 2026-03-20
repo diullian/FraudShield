@@ -69,7 +69,18 @@ public class IdempotencyMiddleware
         await using var responseBodyStream = new MemoryStream();
         context.Response.Body = responseBodyStream;
 
-        await _next(context);
+        try
+        {
+            await _next(context);
+        }
+        catch
+        {
+            // restaura o stream original antes de propagar
+            context.Response.Body = originalBodyStream;
+            throw;
+        }
+
+        //await _next(context);
 
         if (context.Response.StatusCode is >= 200 and <= 299)
         {
