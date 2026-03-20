@@ -12,7 +12,6 @@ public class RuleResult
     public string Name { get; set; }
     public bool Triggered { get; set; }
     public FraudDecision Decision { get; set; }
-
     public RiskLevel RiskLevel { get; set; }
     public string Reason { get; set; }
 
@@ -23,6 +22,7 @@ public class RuleResult
             Name = name,
             Triggered = false,
             Decision = FraudDecision.Approved,
+            RiskLevel = RiskLevel.Low,
             Reason = string.Empty
         };
     }

@@ -3,23 +3,24 @@ using FraudShield.Worker.Enums;
 
 namespace FraudShield.Worker.Rules.FraudRules.Amount;
 
-public class HighAmountRule : IFraudRule
+public class MediumAmountRule : IFraudRule
 {
-    public string Name => "HighAmount";
+    public string Name => "MediumAmount";
 
-    private const decimal Threshold = 1000m;
+    private const decimal Threshold = 500m;
+    private const decimal HighThreshold = 1000m;
 
     public RuleResult Evaluate(TransactionCreatedEvent transaction)
     {
-        if (transaction.Amount > Threshold)
+        if (transaction.Amount > Threshold && transaction.Amount < HighThreshold)
         {
             return new RuleResult
             {
                 Name = Name,
                 Triggered = true,
                 Decision = FraudDecision.Review,
-                RiskLevel = RiskLevel.Medium,
-                Reason = $"Transaction amount {transaction.Amount} exceeds the threshold."
+                RiskLevel = RiskLevel.Low,
+                Reason = $"Transaction amount {transaction.Amount} exceeds medium threshold of {Threshold}."
             };
         }
 
