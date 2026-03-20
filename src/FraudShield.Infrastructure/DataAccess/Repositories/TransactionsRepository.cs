@@ -29,6 +29,13 @@ internal class TransactionsRepository : ITransactionsWriteOnlyRepository, ITrans
         return transaction.Id;
     }
 
+    public async Task<bool> ExistsByCorrelationId(Guid CorrelationId, CancellationToken ct = default)
+    {
+        return await _dbContext.FinancialTransactions.AsNoTracking().AnyAsync(t => t.CorrelationId == CorrelationId, ct);
+    }
+
+   
+
     public async Task<List<FinancialTransaction>> GetAll(CancellationToken ct = default)
     {
         var transactions = await _dbContext.FinancialTransactions.AsNoTracking().ToListAsync(ct);

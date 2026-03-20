@@ -21,14 +21,10 @@ public class FraudResultConsumer : IConsumer<FraudEvaluatedResultEvent>
     public async Task Consume(ConsumeContext<FraudEvaluatedResultEvent> context)
     {
         var correlationId = context.CorrelationId?.ToString() ?? "N/A";
-
-
-        _logger.LogInformation("[*** RESULTADO - Consume API ***]");
+        
         _logger.LogInformation("Iniciando Consume do transact.id : {TransactionId}  <> CorrelationId: {CorrelationId}", context.Message.TransactionId, correlationId);
         await Task.Delay(TimeSpan.FromSeconds(10)); // Simula um processamento mais demorado
-        _logger.LogInformation("");
-
-
+        
         if (!Enum.TryParse< Domain.Enums.TransactionStatus> (context.Message.Status, out var status))
         {
             _logger.LogWarning(
@@ -48,7 +44,7 @@ public class FraudResultConsumer : IConsumer<FraudEvaluatedResultEvent>
         }
 
 
-        _logger.LogInformation("**Updating transaction** {TransactionId} with status {Status} and risk level {RiskLevel} at {ProcessedAt}",
+        _logger.LogInformation("Updating transaction {TransactionId} with status {Status} and risk level {RiskLevel} at {ProcessedAt}",
             context.Message.TransactionId,
             context.Message.Status,
             context.Message.RiskLevel,
