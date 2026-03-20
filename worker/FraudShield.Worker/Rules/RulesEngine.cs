@@ -21,6 +21,7 @@ public class RulesEngine : IRulesEngine
         var evaluationResult = new FraudEvaluationResult
         {
             TransactionId = transaction.TransactionId,
+            CorrelationId = transaction.CorrelationId,
             EvaluatedAt = DateTime.UtcNow,
             TriggeredRules = new List<RuleResult>()
         };

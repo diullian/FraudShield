@@ -2,8 +2,10 @@ using FraudShield.Api.Middleware;
 using FraudShield.Application;
 using FraudShield.Application.Interfaces;
 using FraudShield.Infrastructure;
-using FraudShield.Infrastructure.Idempotency;
+using FraudShield.Infrastructure.DataAccess;
 using FraudShield.Infrastructure.Http;
+using FraudShield.Infrastructure.Idempotency;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -54,4 +56,11 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<FraudShieldDbContext>();
+    db.Database.Migrate(); // cria o banco e aplica migrations automaticamente
+}
+
 app.Run();
+

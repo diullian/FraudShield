@@ -1,3 +1,5 @@
+using FraudShield.Worker.Audit;
+using FraudShield.Worker.Audit.Repository;
 using FraudShield.Worker.Context;
 using FraudShield.Worker.Contracts;
 using FraudShield.Worker.Rules;
@@ -12,14 +14,16 @@ public class FraudWorker : IConsumer<TransactionCreatedEvent>
     private readonly IEventValidator _eventValidator;
     private readonly IRulesEngine _rulesEngine;
     private readonly IPublishEndpoint _publishEndpoint;
+    private readonly IAuditRepository _auditRepository;
     private readonly CorrelationContext _correlationContext;
 
-    public FraudWorker(ILogger<FraudWorker> logger, IEventValidator validator, IRulesEngine rulesEngine, IPublishEndpoint publishEndpoint, CorrelationContext correlationContext)
+    public FraudWorker(ILogger<FraudWorker> logger, IEventValidator validator, IRulesEngine rulesEngine, IPublishEndpoint publishEndpoint, IAuditRepository auditRepository, CorrelationContext correlationContext)
     {
         _logger = logger;
         _eventValidator = validator;
         _rulesEngine = rulesEngine;
         _publishEndpoint = publishEndpoint;
+        _auditRepository = auditRepository;
         _correlationContext = correlationContext;
     }
 
@@ -50,11 +54,10 @@ public class FraudWorker : IConsumer<TransactionCreatedEvent>
             return;
         }
         
-
         //sendo válido o contrato, processa as regras de negócio
         var resultTransaction = await _rulesEngine.ValidateTransaction(transaction);
-
-      
+        
+        
         if (resultTransaction.Decision == Enums.FraudDecision.Rejected)
         {
             _logger.LogWarning("Transaction {TransactionId} rejected due to high risk. Risk Level: {RiskLevel}",
@@ -71,6 +74,7 @@ public class FraudWorker : IConsumer<TransactionCreatedEvent>
                 transaction.TransactionId, resultTransaction.RiskLevel);
         }
 
+        //prepara o evento de resultado para publicação, sem expor detalhes sensíveis da validação ou regras aplicadas
         var fraudFinalResult = new FraudEvaluatedResultEvent
         {
             TransactionId = resultTransaction.TransactionId,
@@ -79,7 +83,10 @@ public class FraudWorker : IConsumer<TransactionCreatedEvent>
             CreatedAt = transaction.CreatedAt
         };
 
-       
+        var auditRepository = FraudAuditDocument.From(transaction, fraudFinalResult, resultTransaction.TriggeredRules);
+
+        await _auditRepository.SaveAsync(auditRepository, context.CancellationToken);
+
         // Em produção, substituiríamos IPublishEndpoint por uma abstração IMessageBus
         // para encapsular a propagação do CorrelationId automaticamente em todos os publishes,
         // seguindo o mesmo padrão já adotado na API.
@@ -90,4 +97,23 @@ public class FraudWorker : IConsumer<TransactionCreatedEvent>
         });
     }
 
+    
+    //private void LogDecision(Guid transactionId, TransactionCreatedEvent transaction)
+    //{
+    //    if (transaction. == Enums.FraudDecision.Rejected.ToString())
+    //    {
+    //        _logger.LogWarning("Transaction {TransactionId} rejected due to high risk. Risk Level: {RiskLevel}",
+    //            transaction.TransactionId, riskLevel);
+    //    }
+    //    else if(decision == Enums.FraudDecision.Review.ToString())
+    //    {
+    //        _logger.LogInformation("Transaction {TransactionId} flagged for manual review. Risk Level: {RiskLevel}",
+    //            transaction.TransactionId, riskLevel);
+    //    }
+    //    else
+    //    {
+    //        _logger.LogInformation("Transaction {TransactionId} approved. Risk Level: {RiskLevel}",
+    //            transaction.TransactionId, riskLevel);
+    //    }
+    //}
 }

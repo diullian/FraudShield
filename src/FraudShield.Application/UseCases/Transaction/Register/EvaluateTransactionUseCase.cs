@@ -42,10 +42,12 @@ public class EvaluateTransactionUseCase : IEvaluateTransactionUseCase
             ? guid
             : Guid.NewGuid();
 
-        await _repository.AddTransactionAsync(transaction);
-
+        var transactionId = await _repository.AddTransactionAsync(transaction);
+        
         //publica o evento de transação criada para o barramento de mensagens
         var transactionEvent = _mapper.Map<TransactionCreatedEvent>(transaction);
+        transactionEvent.TransactionId = transactionId; //associa id
+
         await _messageBus.PublishAsync(transactionEvent, ct);
 
         //retorna a resposta para o cliente

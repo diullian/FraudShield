@@ -18,6 +18,9 @@ public class FraudShieldDbContext : DbContext
             .HasIndex(t => t.IdempotencyKey).IsUnique();
 
         modelBuilder.Entity<FinancialTransaction>()
+            .HasIndex(t => t.CorrelationId).IsUnique();
+
+        modelBuilder.Entity<FinancialTransaction>()
               .Property(t => t.Amount)
               .HasPrecision(18, 2);
 

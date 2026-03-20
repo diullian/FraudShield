@@ -17,7 +17,7 @@ namespace FraudShield.Infrastructure.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CorrelationId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    IdempotencyKey = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IdempotencyKey = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Amount = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -42,6 +42,18 @@ namespace FraudShield.Infrastructure.Migrations
                 {
                     table.PrimaryKey("PK_FinancialTransactions", x => x.Id);
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_FinancialTransactions_CorrelationId",
+                table: "FinancialTransactions",
+                column: "CorrelationId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_FinancialTransactions_IdempotencyKey",
+                table: "FinancialTransactions",
+                column: "IdempotencyKey",
+                unique: true);
         }
 
         /// <inheritdoc />

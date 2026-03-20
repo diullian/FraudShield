@@ -54,5 +54,8 @@ public class FinancialTransactionMappingConfig
                 .Map(dest => dest.PaymentType, src => src.PaymentType.ToString())
                 .Map(dest => dest.CreatedAt, src => src.CreatedAt);
 
+        config.NewConfig<FinancialTransaction, ResponseEvaluateTransactionJson>()
+                .Map(dest => dest.TransactionId, src => src.Id);
+
     }
 }

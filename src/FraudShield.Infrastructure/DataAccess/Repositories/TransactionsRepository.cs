@@ -16,7 +16,7 @@ internal class TransactionsRepository : ITransactionsWriteOnlyRepository, ITrans
     }
 
     
-    public async Task AddTransactionAsync(FinancialTransaction transaction, CancellationToken ct = default)
+    public async Task<Guid> AddTransactionAsync(FinancialTransaction transaction, CancellationToken ct = default)
     {
 
         if (transaction == null) {
@@ -24,8 +24,9 @@ internal class TransactionsRepository : ITransactionsWriteOnlyRepository, ITrans
         }
 
         await _dbContext.FinancialTransactions.AddAsync(transaction, ct);
-
         await _dbContext.SaveChangesAsync();
+
+        return transaction.Id;
     }
 
     public async Task<List<FinancialTransaction>> GetAll(CancellationToken ct = default)
