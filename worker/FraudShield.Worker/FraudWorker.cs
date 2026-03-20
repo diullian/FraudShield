@@ -56,23 +56,8 @@ public class FraudWorker : IConsumer<TransactionCreatedEvent>
         
         //sendo válido o contrato, processa as regras de negócio
         var resultTransaction = await _rulesEngine.ValidateTransaction(transaction);
-        
-        
-        if (resultTransaction.Decision == Enums.FraudDecision.Rejected)
-        {
-            _logger.LogWarning("Transaction {TransactionId} rejected due to high risk. Risk Level: {RiskLevel}",
-                transaction.TransactionId, resultTransaction.RiskLevel);
-        }
-        else if(resultTransaction.Decision == Enums.FraudDecision.Review)
-        {
-            _logger.LogInformation("Transaction {TransactionId} flagged for manual review. Risk Level: {RiskLevel}",
-                transaction.TransactionId, resultTransaction.RiskLevel);
-        }
-        else
-        {
-            _logger.LogInformation("Transaction {TransactionId} approved. Risk Level: {RiskLevel}",
-                transaction.TransactionId, resultTransaction.RiskLevel);
-        }
+
+        LogDecision(resultTransaction);
 
         //prepara o evento de resultado para publicação, sem expor detalhes sensíveis da validação ou regras aplicadas
         var fraudFinalResult = new FraudEvaluatedResultEvent
@@ -97,23 +82,23 @@ public class FraudWorker : IConsumer<TransactionCreatedEvent>
         });
     }
 
-    
-    //private void LogDecision(Guid transactionId, TransactionCreatedEvent transaction)
-    //{
-    //    if (transaction. == Enums.FraudDecision.Rejected.ToString())
-    //    {
-    //        _logger.LogWarning("Transaction {TransactionId} rejected due to high risk. Risk Level: {RiskLevel}",
-    //            transaction.TransactionId, riskLevel);
-    //    }
-    //    else if(decision == Enums.FraudDecision.Review.ToString())
-    //    {
-    //        _logger.LogInformation("Transaction {TransactionId} flagged for manual review. Risk Level: {RiskLevel}",
-    //            transaction.TransactionId, riskLevel);
-    //    }
-    //    else
-    //    {
-    //        _logger.LogInformation("Transaction {TransactionId} approved. Risk Level: {RiskLevel}",
-    //            transaction.TransactionId, riskLevel);
-    //    }
-    //}
+
+    private void LogDecision(FraudEvaluationResult transaction)
+    {
+        if (transaction.Decision == Enums.FraudDecision.Rejected)
+        {
+            _logger.LogWarning("Transaction {TransactionId} rejected due to high risk. Risk Level: {RiskLevel}",
+                transaction.TransactionId, transaction.RiskLevel);
+        }
+        else if (transaction.Decision == Enums.FraudDecision.Review)
+        {
+            _logger.LogInformation("Transaction {TransactionId} flagged for manual review. Risk Level: {RiskLevel}",
+                transaction.TransactionId, transaction.RiskLevel);
+        }
+        else
+        {
+            _logger.LogInformation("Transaction {TransactionId} approved. Risk Level: {RiskLevel}",
+                transaction.TransactionId, transaction.RiskLevel);
+        }
+    }
 }
