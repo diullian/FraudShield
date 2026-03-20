@@ -31,8 +31,8 @@ public class FraudWorker : IConsumer<TransactionCreatedEvent>
     {
         if(context.CorrelationId == null)
         {
-            _logger.LogWarning("Received message without **CorrelationId**. Message will be ignored.");
-            return;
+            _logger.LogWarning("Received message without CorrelationId. Message will be ignored.");
+            throw new InvalidOperationException("CorrelationId is required for processing. Message will be ignored.");
         }
 
         //armazena o CorrelationId no contexto para que possa ser acessado em outros pontos do processamento
@@ -51,7 +51,7 @@ public class FraudWorker : IConsumer<TransactionCreatedEvent>
                 "Invalid contract: {Errors}",
                 string.Join(", ", validation.ErrorMessage));
 
-            return;
+           throw new InvalidOperationException($"Invalid contract: {string.Join(", ", validation.ErrorMessage)}");
         }
         
         //sendo válido o contrato, processa as regras de negócio

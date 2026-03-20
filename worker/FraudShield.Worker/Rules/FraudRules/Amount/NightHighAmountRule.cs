@@ -21,6 +21,7 @@ public class NightHighAmountRule : IFraudRule
                 Name = Name,
                 Triggered = true,
                 Decision = FraudDecision.Rejected,
+                RiskLevel = RiskLevel.High,
                 Reason = "Transaction amount is high during night hours."
             };
         }

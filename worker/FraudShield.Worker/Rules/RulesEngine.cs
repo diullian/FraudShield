@@ -26,6 +26,8 @@ public class RulesEngine : IRulesEngine
             TriggeredRules = new List<RuleResult>()
         };
 
+
+        // Valida todas as regras para a transação e coleta os resultados
         if (transaction != null)
         {
             _rules.ToList().ForEach(rule =>
@@ -37,7 +39,8 @@ public class RulesEngine : IRulesEngine
             });
         }
 
-        if(evaluationResult.TriggeredRules.Any())
+        // Calcula a decisão final e o nível de risco com base nas regras acionadas
+        if (evaluationResult.TriggeredRules.Any())
         {
             evaluationResult.Decision = CalculateDecision(evaluationResult.TriggeredRules);
             evaluationResult.RiskLevel = CalculateRiskLevel(evaluationResult.TriggeredRules);
@@ -48,11 +51,13 @@ public class RulesEngine : IRulesEngine
             evaluationResult.RiskLevel = RiskLevel.Low;
         }
 
+        // Retorna o resultado da avaliação
         return await Task.FromResult(evaluationResult);
     }
     private FraudDecision CalculateDecision(List<RuleResult> results)
     {
-        if(results.Any(r => r.Decision == FraudDecision.Rejected))
+        // Se alguma regra rejeitar a transação, a decisão final é rejeitada
+        if (results.Any(r => r.Decision == FraudDecision.Rejected))
         {
             return FraudDecision.Rejected;
         }
@@ -68,6 +73,7 @@ public class RulesEngine : IRulesEngine
 
     private RiskLevel CalculateRiskLevel(List<RuleResult> results)
     {
+        // O nível de risco é determinado pelo nível mais alto entre as regras acionadas
         if (results.Any(r => r.RiskLevel == RiskLevel.High))
         {
             return RiskLevel.High;
