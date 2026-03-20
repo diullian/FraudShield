@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FraudShield.Communication.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,4 +9,8 @@ namespace FraudShield.Communication.Responses;
 
 public class ResponseEvaluateTransactionJson
 {
+    public Guid TransactionId { get; set; }
+    public string Message { get; set; } = "Transaction received and being processed. Waiting please!!";
+    public TransactionStatus Status { get; set; }
+
 }

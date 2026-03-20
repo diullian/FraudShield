@@ -7,5 +7,48 @@ public class FraudShieldDbContext : DbContext
 {
     public FraudShieldDbContext(DbContextOptions options) : base(options) { }
 
-    DbSet<FinancialTransaction> FinancialTransactions { get; set; }
+    public DbSet<FinancialTransaction> FinancialTransactions { get; set; }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        base.OnModelCreating(modelBuilder);
+
+        //chave única idempotency key para evitar transações duplicadas
+        modelBuilder.Entity<FinancialTransaction>()
+            .HasIndex(t => t.IdempotencyKey).IsUnique();
+
+        modelBuilder.Entity<FinancialTransaction>()
+            .HasIndex(t => t.CorrelationId).IsUnique();
+
+        modelBuilder.Entity<FinancialTransaction>()
+              .Property(t => t.Amount)
+              .HasPrecision(18, 2);
+
+        modelBuilder.Entity<FinancialTransaction>()
+            .Property(t => t.Status)
+            .HasConversion<string>();
+
+        modelBuilder.Entity<FinancialTransaction>()
+         .Property(t => t.RiskLevel)
+         .HasConversion<string>();
+
+        modelBuilder.Entity<FinancialTransaction>()
+            .Property(t => t.PaymentType)
+            .HasConversion<string>();
+
+        modelBuilder.Entity<FinancialTransaction>()
+            .OwnsOne(t => t.Customer, c =>
+            {
+                c.Property(x => x.DeviceType)
+                 .HasConversion<string>();
+            });
+
+        modelBuilder.Entity<FinancialTransaction>()
+            .Property(t => t.Currency)
+            .HasConversion<string>();
+
+        modelBuilder.Entity<FinancialTransaction>()
+            .OwnsOne(t => t.Merchant);
+
+    }
 }

@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk.Worker">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>dotnet-FraudShield.Worker-89b86c02-0f7e-43ba-bd4c-5fe50cefd07c</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MassTransit.RabbitMQ" Version="8.5.8" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.1" />
+    <PackageReference Include="MongoDB.Driver" Version="3.7.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Rules\FraudRules\Device\" />
+    <Folder Include="Rules\FraudRules\Location\" />
+  </ItemGroup>
+</Project>

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FraudShield.Communication.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,13 +9,13 @@ namespace FraudShield.Communication.Requests;
 
 public class RequestEvaluateTransactionJson
 {
-    public string IdempotencyKey { get; set; }
-
     public decimal Amount { get; set; }
 
-    public DateTime CreateAt { get; set; }
+    public DateTime CreatedAt { get; set; }
 
-    public CustomerRequest Customer { get; set; }
+    public Currency Currency { get; set; }
 
-    public MerchantRequest Merchant { get; set; }
+    public PaymentType PaymentType { get; set; }
+    public RequestCustomerJson Customer { get; set; }
+    public RequestMerchantJson Merchant { get; set; }
 }
